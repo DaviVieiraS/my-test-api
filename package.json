@@ -8,9 +8,6 @@
     "dev": "vercel dev",
     "build": "echo 'No build step required'"
   },
-  "engines": {
-    "node": "22.x"
-  },
   "keywords": ["serverless", "api", "vercel", "request-viewer"],
   "author": "DaviVieiraS",
   "license": "MIT"
