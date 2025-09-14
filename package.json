@@ -9,7 +9,7 @@
     "build": "echo 'No build step required'"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": "20.x"
   },
   "keywords": ["serverless", "api", "vercel", "request-viewer"],
   "author": "DaviVieiraS",
