@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POST Request Viewer - GitHub Pages</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .stats {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .request {
+            border: 1px solid #ddd;
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 5px;
+            background: #fafafa;
+        }
+        .request-header {
+            background: #007cba;
+            color: white;
+            padding: 10px;
+            margin: -15px -15px 15px -15px;
+            border-radius: 5px 5px 0 0;
+        }
+        .request-id {
+            font-weight: bold;
+        }
+        .timestamp {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .body {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 3px;
+            margin-top: 10px;
+        }
+        .empty {
+            text-align: center;
+            color: #666;
+            padding: 40px;
+        }
+        .clear-btn {
+            background: #dc3545;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .clear-btn:hover {
+            background: #c82333;
+        }
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .note {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ffc107;
+        }
+        .simulate-btn {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        .simulate-btn:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📨 POST Request Viewer</h1>
+            <p>Client-side request viewer for GitHub Pages</p>
+        </div>
+        
+        <div class="note">
+            <strong>ℹ️ Note:</strong> This is a client-side version that works on GitHub Pages. 
+            It simulates POST requests and stores them in your browser's localStorage.
+            Use the "Simulate POST Request" button below to test it.
+        </div>
+        
+        <div class="stats">
+            <strong>Total Requests: <span id="requestCount">0</span></strong>
+            <button class="clear-btn" onclick="clearRequests()">Clear All</button>
+            <button class="simulate-btn" onclick="simulatePostRequest()">Simulate POST Request</button>
+        </div>
+
+        <div id="requestsList"></div>
+    </div>
+
+    <script>
+        // Load requests from localStorage
+        function loadRequests() {
+            const requests = JSON.parse(localStorage.getItem('postRequests') || '[]');
+            displayRequests(requests);
+        }
+
+        // Display requests
+        function displayRequests(requests) {
+            const container = document.getElementById('requestsList');
+            const countElement = document.getElementById('requestCount');
+            
+            countElement.textContent = requests.length;
+
+            if (requests.length === 0) {
+                container.innerHTML = '<div class="empty"><h3>No POST requests yet</h3><p>Click "Simulate POST Request" to create a test request!</p></div>';
+                return;
+            }
+
+            container.innerHTML = requests.reverse().map(req => `
+                <div class="request">
+                    <div class="request-header">
+                        <span class="request-id">Request #${req.id}</span>
+                        <span class="timestamp">${new Date(req.timestamp).toLocaleString()}</span>
+                    </div>
+                    <h4>Body:</h4>
+                    <div class="body">
+                        <pre>${JSON.stringify(req.body, null, 2)}</pre>
+                    </div>
+                    <details>
+                        <summary>Show Headers</summary>
+                        <div class="body">
+                            <pre>${JSON.stringify(req.headers, null, 2)}</pre>
+                        </div>
+                    </details>
+                </div>
+            `).join('');
+        }
+
+        // Clear all requests
+        function clearRequests() {
+            if (confirm('Are you sure you want to clear all requests?')) {
+                localStorage.removeItem('postRequests');
+                loadRequests();
+            }
+        }
+
+        // Simulate a POST request
+        function simulatePostRequest() {
+            const sampleData = {
+                name: "Davi",
+                email: "davi@example.com",
+                message: "Hello from simulated POST request!",
+                timestamp: new Date().toISOString(),
+                randomData: Math.random().toString(36).substring(7)
+            };
+
+            const requestData = {
+                id: Date.now(),
+                timestamp: new Date().toISOString(),
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json',
+                    'user-agent': 'Mozilla/5.0 (Simulated Browser)',
+                    'accept': 'application/json'
+                },
+                body: sampleData
+            };
+
+            // Get existing requests
+            const requests = JSON.parse(localStorage.getItem('postRequests') || '[]');
+            requests.push(requestData);
+            
+            // Save back to localStorage
+            localStorage.setItem('postRequests', JSON.stringify(requests));
+            
+            // Refresh display
+            loadRequests();
+        }
+
+        // Load requests on page load
+        loadRequests();
+
+        // Auto-refresh every 5 seconds to catch new requests
+        setInterval(loadRequests, 5000);
+    </script>
+</body>
+</html>

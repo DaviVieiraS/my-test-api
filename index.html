@@ -40,31 +40,29 @@
 </head>
 <body>
     <div class="container">
-        <h1>🧪 Test API - Request Viewer</h1>
-        <p>This is a serverless function that displays incoming HTTP request data.</p>
+        <h1>📨 POST Request Viewer</h1>
+        <p>Client-side POST request viewer that works on GitHub Pages using localStorage.</p>
         
-        <h2>Available Endpoints:</h2>
-        <a href="/api/test" class="api-link">Simple Test</a>
-        <a href="/api/post-viewer" class="api-link">📨 POST Viewer</a>
-        <a href="/post-form.html" class="api-link">📝 Test Form</a>
-        <a href="/api/handler" class="api-link">Full Request Viewer</a>
+        <h2>Available Pages:</h2>
+        <a href="post-viewer.html" class="api-link">📨 POST Viewer</a>
+        <a href="post-form.html" class="api-link">📝 Test Form</a>
         
         <div class="note">
-            <strong>💡 Usage:</strong>
+            <strong>💡 How it works:</strong>
             <ul>
-                <li><strong>GET</strong> with query parameters: <code>?name=Davi&test=1</code></li>
-                <li><strong>POST</strong> JSON data or form data</li>
-                <li>Both endpoints will show method, query, headers, and body</li>
+                <li><strong>POST Viewer</strong> - Shows all simulated POST requests in a clean list</li>
+                <li><strong>Test Form</strong> - Send form data or JSON requests</li>
+                <li><strong>localStorage</strong> - Requests are stored in your browser</li>
+                <li><strong>Clear Button</strong> - Reset all requests with one click</li>
             </ul>
         </div>
         
-        <h3>Quick Tests:</h3>
-        <p>Try these URLs:</p>
+        <h3>Features:</h3>
         <ul>
-            <li><code>/api/test</code> - Simple JSON response</li>
-            <li><code>/api/post-viewer</code> - 📨 View POST requests with button list</li>
-            <li><code>/post-form.html</code> - 📝 Form to send test POST requests</li>
-            <li><code>/api/handler</code> - Full request viewer with HTML</li>
+            <li>✅ <strong>Client-side only</strong> - Works entirely in your browser</li>
+            <li>✅ <strong>GitHub Pages compatible</strong> - No server required</li>
+            <li>✅ <strong>Request simulation</strong> - Simulate POST requests</li>
+            <li>✅ <strong>Persistent storage</strong> - Uses localStorage</li>
         </ul>
     </div>
 </body>

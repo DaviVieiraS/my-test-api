@@ -111,14 +111,13 @@
 
         <div class="links">
             <h3>Quick Links:</h3>
-            <a href="/api/post-viewer" target="_blank">📋 View All Requests</a>
-            <a href="/api/test" target="_blank">🧪 Simple Test</a>
-            <a href="/" target="_blank">🏠 Home</a>
+            <a href="post-viewer.html" target="_blank">📋 View All Requests</a>
+            <a href="index.html" target="_blank">🏠 Home</a>
         </div>
     </div>
 
     <script>
-        const API_URL = '/api/post-viewer';
+        const API_URL = 'post-viewer.html';
 
         document.getElementById('postForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -127,28 +126,37 @@
 
         function sendFormData() {
             const formData = new FormData(document.getElementById('postForm'));
+            const requestData = {};
             
-            fetch(API_URL, {
+            for (let [key, value] of formData.entries()) {
+                requestData[key] = value;
+            }
+
+            // Simulate POST request by storing in localStorage
+            const postRequest = {
+                id: Date.now(),
+                timestamp: new Date().toISOString(),
                 method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('result').innerHTML = `
-                    <div class="success">
-                        ✅ POST request sent successfully!<br>
-                        Request ID: ${data.requestId}<br>
-                        Total requests: ${data.totalRequests}
-                    </div>
-                `;
-            })
-            .catch(error => {
-                document.getElementById('result').innerHTML = `
-                    <div style="background: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px;">
-                        ❌ Error: ${error.message}
-                    </div>
-                `;
-            });
+                headers: {
+                    'content-type': 'application/x-www-form-urlencoded',
+                    'user-agent': navigator.userAgent
+                },
+                body: requestData
+            };
+
+            // Get existing requests
+            const requests = JSON.parse(localStorage.getItem('postRequests') || '[]');
+            requests.push(postRequest);
+            localStorage.setItem('postRequests', JSON.stringify(requests));
+
+            document.getElementById('result').innerHTML = `
+                <div class="success">
+                    ✅ POST request simulated successfully!<br>
+                    Request ID: ${postRequest.id}<br>
+                    Total requests: ${requests.length}<br>
+                    <a href="post-viewer.html" target="_blank">View in POST Viewer</a>
+                </div>
+            `;
         }
 
         function sendJSON() {
@@ -159,30 +167,31 @@
                 jsonData[key] = value;
             }
 
-            fetch(API_URL, {
+            // Simulate JSON POST request
+            const postRequest = {
+                id: Date.now(),
+                timestamp: new Date().toISOString(),
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'content-type': 'application/json',
+                    'user-agent': navigator.userAgent
                 },
-                body: JSON.stringify(jsonData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('result').innerHTML = `
-                    <div class="success">
-                        ✅ JSON POST request sent successfully!<br>
-                        Request ID: ${data.requestId}<br>
-                        Total requests: ${data.totalRequests}
-                    </div>
-                `;
-            })
-            .catch(error => {
-                document.getElementById('result').innerHTML = `
-                    <div style="background: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px;">
-                        ❌ Error: ${error.message}
-                    </div>
-                `;
-            });
+                body: jsonData
+            };
+
+            // Get existing requests
+            const requests = JSON.parse(localStorage.getItem('postRequests') || '[]');
+            requests.push(postRequest);
+            localStorage.setItem('postRequests', JSON.stringify(requests));
+
+            document.getElementById('result').innerHTML = `
+                <div class="success">
+                    ✅ JSON POST request simulated successfully!<br>
+                    Request ID: ${postRequest.id}<br>
+                    Total requests: ${requests.length}<br>
+                    <a href="post-viewer.html" target="_blank">View in POST Viewer</a>
+                </div>
+            `;
         }
     </script>
 </body>

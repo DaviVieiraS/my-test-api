@@ -1,127 +1,65 @@
-# Test API - Request Viewer
+# 📨 POST Request Viewer - GitHub Pages
 
-A simple serverless function that displays incoming HTTP requests (method, query parameters, headers, and body) in a formatted HTML page. Perfect for testing APIs, webhooks, and debugging requests.
+A simple client-side POST request viewer that works entirely in your browser using localStorage. Perfect for GitHub Pages!
 
-## Features
+## 🌐 Live Demo
 
-- ✅ Handles GET and POST requests
-- ✅ Shows query parameters, headers, and request body
-- ✅ CORS enabled for cross-origin testing
-- ✅ Returns formatted HTML page
-- ✅ Works with JSON, form data, and raw text
-- ✅ Deploys easily to Vercel
+Visit: `https://davivieiras.github.io/my-test-api/`
 
-## Quick Deploy to Vercel
+## 🚀 Features
 
-### Option 1: GitHub + Vercel (Recommended)
+- ✅ **Client-side only** - Works entirely in your browser
+- ✅ **GitHub Pages compatible** - No server required
+- ✅ **Request simulation** - Simulate POST requests
+- ✅ **Persistent storage** - Uses localStorage
+- ✅ **Clean interface** - Shows requests in a nice list
+- ✅ **Clear functionality** - Reset all requests with one click
 
-1. **Create GitHub repository:**
-   ```bash
-   # If you have GitHub CLI
-   gh repo create my-test-api --public --source=. --remote=origin --push
-   
-   # Or manually create on github.com and push:
-   git remote add origin https://github.com/YOUR_USERNAME/my-test-api.git
-   git push -u origin main
-   ```
+## 📋 Pages
 
-2. **Deploy to Vercel:**
-   - Go to [vercel.com](https://vercel.com)
-   - Sign up/Login and connect GitHub
-   - Click "New Project" → "Import Git Repository"
-   - Select `my-test-api`
-   - Framework: Other/None
-   - Click "Deploy"
+- **`index.html`** - Landing page with instructions
+- **`post-viewer.html`** - View all POST requests in a list
+- **`post-form.html`** - Test form to send POST requests
 
-3. **Your API will be available at:**
-   ```
-   https://my-test-api-XXXX.vercel.app/api/handler
-   ```
+## 🎯 How to Use
 
-### Option 2: Direct Deploy
+1. **Visit the POST Viewer**: Click on "POST Viewer" to see the request list
+2. **Send Test Requests**: Use the test form to simulate POST requests
+3. **View Results**: All requests appear in the viewer with timestamps
+4. **Clear Requests**: Use the "Clear All" button to reset
 
-1. Install Vercel CLI: `npm i -g vercel`
-2. Run: `vercel` (follow prompts)
-3. Your API will be live immediately
+## 🛠️ How It Works
 
-## Testing Your API
+- **localStorage**: Requests are stored in your browser's localStorage
+- **JavaScript**: All functionality is client-side JavaScript
+- **No Server**: Works completely without a backend
+- **GitHub Pages**: Perfect for static hosting
 
-### GET Request (with query parameters)
-```bash
-curl "https://YOUR_PROJECT.vercel.app/api/handler?name=Davi&test=1"
-```
-
-Or open in browser to see the formatted HTML response.
-
-### POST JSON
-```bash
-curl -X POST "https://YOUR_PROJECT.vercel.app/api/handler" \
-  -H "Content-Type: application/json" \
-  -d '{"motor":"ok","temp":32}'
-```
-
-### POST Form Data
-```bash
-curl -X POST -d "name=Davi&note=hello" "https://YOUR_PROJECT.vercel.app/api/handler"
-```
-
-### HTML Form (for browser testing)
-Create a local HTML file:
-```html
-<form action="https://YOUR_PROJECT.vercel.app/api/handler" method="post">
-  <input name="name" value="Davi" />
-  <textarea name="note">hello</textarea>
-  <button type="submit">Send</button>
-</form>
-```
-
-## Project Structure
+## 📁 Project Structure
 
 ```
 my-test-api/
-├── api/
-│   └── handler.js    # Serverless function
-└── README.md
+├── index.html          # Landing page
+├── post-viewer.html    # POST request viewer
+├── post-form.html      # Test form
+└── README.md          # This file
 ```
 
-## How It Works
+## 🎨 Features
 
-- **File Location**: `api/handler.js` - Vercel automatically maps `/api/*` to files in the `api/` folder
-- **Function Export**: Uses ES6 `export default` for Vercel compatibility
-- **CORS**: Enabled for cross-origin requests
-- **Body Parsing**: Handles JSON, form data, and raw text automatically
-- **HTML Response**: Returns formatted HTML showing all request data
+- **Request Simulation**: Simulate both form data and JSON POST requests
+- **Real-time Display**: See requests as they're added
+- **Persistent Storage**: Requests survive page refreshes
+- **Clean UI**: Modern, responsive design
+- **Easy Testing**: Simple form interface
 
-## Troubleshooting
+## 🚀 Deploy to GitHub Pages
 
-### 404 Error
-- Ensure file is named `api/handler.js` (not `api/handler.ts` or other extensions)
-- Check that deployment completed successfully in Vercel dashboard
+1. Push this repository to GitHub
+2. Go to repository Settings → Pages
+3. Select "Deploy from a branch" → "main" → "/ (root)"
+4. Your site will be live at `https://yourusername.github.io/my-test-api/`
 
-### Empty Body
-- Make sure to send `Content-Type: application/json` for JSON requests
-- For form data, use `application/x-www-form-urlencoded`
+## 📝 License
 
-### CORS Issues
-- The function sets `Access-Control-Allow-Origin: *` for all origins
-- If still having issues, check browser dev tools for preflight errors
-
-## Security Notes
-
-⚠️ **This endpoint echoes all data back** - don't send sensitive information!
-
-To secure it:
-1. Add API key validation in the handler
-2. Limit to specific origins
-3. Add rate limiting
-
-## Next Steps
-
-- Add database storage for request history
-- Implement authentication
-- Add webhook testing features
-- Support file uploads
-
-## License
-
-MIT
+MIT License - Feel free to use and modify!
