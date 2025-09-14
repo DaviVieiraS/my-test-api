@@ -2,13 +2,14 @@
   "name": "my-test-api",
   "version": "1.0.0",
   "description": "A simple serverless function that displays HTTP request data",
+  "type": "module",
   "main": "api/handler.js",
   "scripts": {
     "dev": "vercel dev",
     "build": "echo 'No build step required'"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20.0.0"
   },
   "keywords": ["serverless", "api", "vercel", "request-viewer"],
   "author": "DaviVieiraS",
