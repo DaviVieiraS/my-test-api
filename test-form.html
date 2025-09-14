@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test API Form</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        button {
+            background: #007cba;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background: #005a87;
+        }
+        .url-input {
+            background: #f8f9fa;
+            font-family: monospace;
+            font-size: 12px;
+            padding: 8px;
+            margin-bottom: 20px;
+        }
+        .note {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            border-left: 4px solid #007cba;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test API Form</h1>
+        
+        <div class="form-group">
+            <label for="apiUrl">API URL:</label>
+            <input type="text" id="apiUrl" class="url-input" 
+                   placeholder="https://your-project.vercel.app/api/handler" 
+                   value="">
+        </div>
+
+        <form id="testForm">
+            <div class="form-group">
+                <label for="method">HTTP Method:</label>
+                <select id="method">
+                    <option value="GET">GET</option>
+                    <option value="POST">POST</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" value="Davi">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="test@example.com">
+            </div>
+
+            <div class="form-group">
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" placeholder="Enter your message here...">Hello from the test form!</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="category">Category:</label>
+                <select id="category" name="category">
+                    <option value="general">General</option>
+                    <option value="support">Support</option>
+                    <option value="feedback">Feedback</option>
+                    <option value="bug">Bug Report</option>
+                </select>
+            </div>
+
+            <button type="submit">🚀 Send Request</button>
+            <button type="button" onclick="testGet()">🔍 Test GET</button>
+        </form>
+
+        <div class="note">
+            <strong>💡 Usage:</strong>
+            <ol>
+                <li>Replace the API URL with your deployed Vercel endpoint</li>
+                <li>Fill out the form fields</li>
+                <li>Click "Send Request" for POST or "Test GET" for GET</li>
+                <li>You'll be redirected to see the request data</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('testForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const url = document.getElementById('apiUrl').value;
+            const method = document.getElementById('method').value;
+            
+            if (!url) {
+                alert('Please enter an API URL first!');
+                return;
+            }
+
+            if (method === 'POST') {
+                // Create form data and submit as POST
+                const formData = new FormData(this);
+                
+                // Remove method field from form data
+                formData.delete('method');
+                
+                // Create a form and submit it
+                const submitForm = document.createElement('form');
+                submitForm.method = 'POST';
+                submitForm.action = url;
+                submitForm.target = '_blank';
+                
+                for (let [key, value] of formData.entries()) {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = key;
+                    input.value = value;
+                    submitForm.appendChild(input);
+                }
+                
+                document.body.appendChild(submitForm);
+                submitForm.submit();
+                document.body.removeChild(submitForm);
+            }
+        });
+
+        function testGet() {
+            const url = document.getElementById('apiUrl').value;
+            
+            if (!url) {
+                alert('Please enter an API URL first!');
+                return;
+            }
+
+            // Build query string from form data
+            const formData = new FormData(document.getElementById('testForm'));
+            const params = new URLSearchParams();
+            
+            for (let [key, value] of formData.entries()) {
+                if (key !== 'method') {
+                    params.append(key, value);
+                }
+            }
+            
+            const queryString = params.toString();
+            const finalUrl = queryString ? `${url}?${queryString}` : url;
+            
+            window.open(finalUrl, '_blank');
+        }
+
+        // Auto-fill API URL if this is running locally
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            document.getElementById('apiUrl').placeholder = 'https://your-project.vercel.app/api/handler';
+        }
+    </script>
+</body>
+</html>
