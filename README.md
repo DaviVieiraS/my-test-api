@@ -1,6 +1,6 @@
-# 📨 POST Request Viewer - GitHub Pages
+# 📊 User Management System - GitHub Pages
 
-A simple client-side POST request viewer that works entirely in your browser using localStorage. Perfect for GitHub Pages!
+A complete client-side user management system with device tracking, status protocols, and user plans. Works entirely in your browser using localStorage. Perfect for GitHub Pages!
 
 ## 🌐 Live Demo
 
@@ -8,25 +8,30 @@ Visit: `https://davivieiras.github.io/my-test-api/`
 
 ## 🚀 Features
 
-- ✅ **Client-side only** - Works entirely in your browser
-- ✅ **GitHub Pages compatible** - No server required
-- ✅ **Request simulation** - Simulate POST requests
-- ✅ **Persistent storage** - Uses localStorage
-- ✅ **Clean interface** - Shows requests in a nice list
-- ✅ **Clear functionality** - Reset all requests with one click
+- ✅ **User Management** - Create, edit, and delete users with plans
+- ✅ **Device Tracking** - Monitor device numbers and status protocols
+- ✅ **Status Protocols** - HTTPS, WebSocket, MQTT, TCP, UDP support
+- ✅ **User Plans** - Basic, Premium, and Enterprise tiers
+- ✅ **Real-time Dashboard** - Live monitoring of users and devices
+- ✅ **API Simulator** - Send user data and device updates
+- ✅ **Client-side Storage** - All data stored in localStorage
+- ✅ **GitHub Pages Ready** - No server required
 
 ## 📋 Pages
 
-- **`index.html`** - Landing page with instructions
+- **`index.html`** - Landing page with system overview
+- **`dashboard.html`** - User management dashboard
+- **`api-simulator.html`** - API endpoint simulator for user data
 - **`post-viewer.html`** - View all POST requests in a list
 - **`post-form.html`** - Test form to send POST requests
 
 ## 🎯 How to Use
 
-1. **Visit the POST Viewer**: Click on "POST Viewer" to see the request list
-2. **Send Test Requests**: Use the test form to simulate POST requests
-3. **View Results**: All requests appear in the viewer with timestamps
-4. **Clear Requests**: Use the "Clear All" button to reset
+1. **User Dashboard**: Manage users, devices, protocols, and plans
+2. **API Simulator**: Send user registration, device updates, and status reports
+3. **Device Tracking**: Monitor device numbers and status protocols
+4. **User Plans**: Manage Basic ($9.99), Premium ($19.99), and Enterprise ($49.99) plans
+5. **Real-time Monitoring**: View live device status and user activity
 
 ## 🛠️ How It Works
 
@@ -40,18 +45,23 @@ Visit: `https://davivieiras.github.io/my-test-api/`
 ```
 my-test-api/
 ├── index.html          # Landing page
+├── dashboard.html      # User management dashboard
+├── api-simulator.html  # API endpoint simulator
 ├── post-viewer.html    # POST request viewer
 ├── post-form.html      # Test form
 └── README.md          # This file
 ```
 
-## 🎨 Features
+## 🎨 System Features
 
-- **Request Simulation**: Simulate both form data and JSON POST requests
-- **Real-time Display**: See requests as they're added
-- **Persistent Storage**: Requests survive page refreshes
-- **Clean UI**: Modern, responsive design
-- **Easy Testing**: Simple form interface
+- **User Management**: Create users with email, name, and plan assignments
+- **Device Tracking**: Monitor device numbers, names, and status protocols
+- **Status Protocols**: Support for HTTPS, WebSocket, MQTT, TCP, UDP
+- **User Plans**: Basic (5 devices), Premium (20 devices), Enterprise (unlimited)
+- **Real-time Updates**: Live device status monitoring
+- **API Simulation**: Simulate user registration and device updates
+- **Persistent Storage**: All data stored in browser localStorage
+- **Modern UI**: Clean, responsive design with real-time statistics
 
 ## 🚀 Deploy to GitHub Pages
 
