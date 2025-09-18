@@ -3,72 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test API - Request Viewer</title>
+    <title>User Dashboard</title>
     <style>
-        body {
-            font-family: system-ui, -apple-system, sans-serif;
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            background: #f5f5f5;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
         .container {
             background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .header {
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .user-card {
+            background: #f8f9fa;
+            border-radius: 15px;
             padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 20px 0;
+            border: 2px solid #e9ecef;
         }
-        h1 { color: #333; }
-        .api-link {
+        
+        .user-info {
+            margin: 20px 0;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            font-size: 1.3rem;
+            color: #212529;
+            margin-bottom: 20px;
+        }
+        
+        .status {
             display: inline-block;
-            background: #007cba;
-            color: white;
-            padding: 12px 24px;
-            text-decoration: none;
-            border-radius: 5px;
-            margin: 10px 5px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        .api-link:hover { background: #005a87; }
-        .note {
-            background: #e7f3ff;
+        
+        .status.active {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+        
+        .status.inactive {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+        
+        .device-model {
+            background: #e3f2fd;
+            color: #1565c0;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+        }
+        
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+        
+        .error {
+            color: #dc3545;
+            background: #f8d7da;
             padding: 15px;
-            border-radius: 5px;
+            border-radius: 10px;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .refresh-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
             margin-top: 20px;
-            border-left: 4px solid #007cba;
+            transition: all 0.3s ease;
+        }
+        
+        .refresh-btn:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📊 User Management System</h1>
-        <p>Complete user management system with device tracking, status protocols, and user plans - all client-side for GitHub Pages!</p>
-        
-        <h2>Available Pages:</h2>
-        <a href="dashboard.html" class="api-link">📊 User Dashboard</a>
-        <a href="api-simulator.html" class="api-link">📡 API Simulator</a>
-        <a href="post-viewer.html" class="api-link">📨 POST Viewer</a>
-        <a href="post-form.html" class="api-link">📝 Test Form</a>
-        
-        <div class="note">
-            <strong>💡 System Features:</strong>
-            <ul>
-                <li><strong>User Dashboard</strong> - Manage users, devices, protocols, and plans</li>
-                <li><strong>API Simulator</strong> - Send user data, device updates, and status reports</li>
-                <li><strong>Device Tracking</strong> - Monitor device numbers and status protocols</li>
-                <li><strong>User Plans</strong> - Manage Basic, Premium, and Enterprise plans</li>
-            </ul>
+        <div class="header">
+            <h1>👤 User Dashboard</h1>
+            <p>Simple user information display</p>
         </div>
         
-        <h3>Key Features:</h3>
-        <ul>
-            <li>✅ <strong>User Management</strong> - Create, edit, and delete users</li>
-            <li>✅ <strong>Device Tracking</strong> - Monitor device status and protocols</li>
-            <li>✅ <strong>Status Protocols</strong> - HTTPS, WebSocket, MQTT, TCP, UDP</li>
-            <li>✅ <strong>User Plans</strong> - Basic, Premium, Enterprise tiers</li>
-            <li>✅ <strong>Real-time Updates</strong> - Live device status monitoring</li>
-            <li>✅ <strong>Client-side Storage</strong> - All data stored in localStorage</li>
-            <li>✅ <strong>GitHub Pages Ready</strong> - No server required</li>
-        </ul>
+        <div id="userCard" class="user-card">
+            <div class="loading">Loading user data...</div>
+        </div>
+        
+        <button class="refresh-btn" onclick="loadUserData()">🔄 Refresh</button>
     </div>
+
+    <script>
+        // Sample user data - replace with API call
+        const sampleUsers = [
+            {
+                name: "John Doe",
+                status: "active",
+                deviceModel: "iPhone 15 Pro"
+            },
+            {
+                name: "Jane Smith", 
+                status: "inactive",
+                deviceModel: "Samsung Galaxy S24"
+            },
+            {
+                name: "Mike Johnson",
+                status: "active", 
+                deviceModel: "Google Pixel 8"
+            },
+            {
+                name: "Sarah Wilson",
+                status: "inactive",
+                deviceModel: "OnePlus 12"
+            }
+        ];
+        
+        function getRandomUser() {
+            return sampleUsers[Math.floor(Math.random() * sampleUsers.length)];
+        }
+        
+        function displayUser(user) {
+            const userCard = document.getElementById('userCard');
+            
+            userCard.innerHTML = `
+                <div class="user-info">
+                    <div class="info-label">Name</div>
+                    <div class="info-value">${user.name}</div>
+                </div>
+                
+                <div class="user-info">
+                    <div class="info-label">Status</div>
+                    <div class="info-value">
+                        <span class="status ${user.status}">${user.status}</span>
+                    </div>
+                </div>
+                
+                <div class="user-info">
+                    <div class="info-label">Device Model</div>
+                    <div class="info-value">
+                        <div class="device-model">${user.deviceModel}</div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function loadUserData() {
+            try {
+                // Simulate API call delay
+                setTimeout(() => {
+                    const user = getRandomUser();
+                    displayUser(user);
+                }, 500);
+            } catch (error) {
+                document.getElementById('userCard').innerHTML = 
+                    '<div class="error">Error loading user data. Please try again.</div>';
+            }
+        }
+        
+        // Load initial data
+        loadUserData();
+        
+        // Auto-refresh every 10 seconds
+        setInterval(loadUserData, 10000);
+    </script>
 </body>
 </html>
