@@ -336,34 +336,8 @@
 
     <script>
         // User data storage
-        let users = [
-            {
-                id: 1,
-                name: "John Doe",
-                status: "active",
-                deviceModel: "iPhone 15 Pro"
-            },
-            {
-                id: 2,
-                name: "Jane Smith", 
-                status: "inactive",
-                deviceModel: "Samsung Galaxy S24"
-            },
-            {
-                id: 3,
-                name: "Mike Johnson",
-                status: "active", 
-                deviceModel: "Google Pixel 8"
-            },
-            {
-                id: 4,
-                name: "Sarah Wilson",
-                status: "inactive",
-                deviceModel: "OnePlus 12"
-            }
-        ];
-        
-        let nextId = 5;
+        let users = [];
+        let nextId = 1;
         
         function showMessage(message, type = 'success') {
             const messageArea = document.getElementById('messageArea');
@@ -495,9 +469,23 @@
             sendUserUpdate('delete', deletedUser);
         }
         
-        function loadUsers() {
-            displayUsers();
-            showMessage('Users refreshed!');
+        async function loadUsers() {
+            try {
+                const response = await fetch('/api/user?all=true');
+                const data = await response.json();
+                
+                if (data.success) {
+                    users = data.data || [];
+                    nextId = Math.max(...users.map(u => u.id), 0) + 1;
+                    displayUsers();
+                    showMessage(`Loaded ${users.length} users from API!`);
+                } else {
+                    showMessage('Failed to load users from API', 'error');
+                }
+            } catch (error) {
+                console.error('Error loading users:', error);
+                showMessage('Error loading users from API', 'error');
+            }
         }
         
         function exportUsers() {
@@ -538,7 +526,7 @@
         }
         
         // Initialize the page
-        displayUsers();
+        loadUsers();
     </script>
 </body>
 </html>

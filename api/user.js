@@ -1,3 +1,33 @@
+// In-memory storage for users (in production, use a database)
+let users = [
+  {
+    id: 1,
+    name: "John Doe",
+    status: "active",
+    deviceModel: "iPhone 15 Pro"
+  },
+  {
+    id: 2,
+    name: "Jane Smith", 
+    status: "inactive",
+    deviceModel: "Samsung Galaxy S24"
+  },
+  {
+    id: 3,
+    name: "Mike Johnson",
+    status: "active", 
+    deviceModel: "Google Pixel 8"
+  },
+  {
+    id: 4,
+    name: "Sarah Wilson",
+    status: "inactive",
+    deviceModel: "OnePlus 12"
+  }
+];
+
+let nextId = 5;
+
 export default function handler(request, response) {
   // Enable CORS for all origins
   response.setHeader('Access-Control-Allow-Origin', '*');
@@ -28,6 +58,60 @@ export default function handler(request, response) {
         source: 'Quectel BG95'
       });
       
+      let result = {};
+      
+      // Process the action
+      switch (action) {
+        case 'add':
+          if (user && user.name && user.deviceModel) {
+            const newUser = {
+              id: user.id || nextId++,
+              name: user.name,
+              status: user.status || 'active',
+              deviceModel: user.deviceModel
+            };
+            users.push(newUser);
+            result = { message: `User '${newUser.name}' added successfully`, user: newUser };
+          } else {
+            throw new Error('Missing required fields: name and deviceModel');
+          }
+          break;
+          
+        case 'update':
+          if (user && user.id) {
+            const userIndex = users.findIndex(u => u.id === user.id);
+            if (userIndex !== -1) {
+              const oldUserData = { ...users[userIndex] };
+              if (user.name) users[userIndex].name = user.name;
+              if (user.status) users[userIndex].status = user.status;
+              if (user.deviceModel) users[userIndex].deviceModel = user.deviceModel;
+              result = { message: `User '${users[userIndex].name}' updated successfully`, user: users[userIndex], oldUser: oldUserData };
+            } else {
+              throw new Error(`User with ID ${user.id} not found`);
+            }
+          } else {
+            throw new Error('Missing required field: user ID');
+          }
+          break;
+          
+        case 'delete':
+          if (user && user.id) {
+            const userIndex = users.findIndex(u => u.id === user.id);
+            if (userIndex !== -1) {
+              const deletedUser = users.splice(userIndex, 1)[0];
+              result = { message: `User '${deletedUser.name}' deleted successfully`, user: deletedUser };
+            } else {
+              throw new Error(`User with ID ${user.id} not found`);
+            }
+          } else {
+            throw new Error('Missing required field: user ID');
+          }
+          break;
+          
+        default:
+          throw new Error(`Unknown action: ${action}`);
+      }
+      
       // Log the request for monitoring
       const logEntry = {
         timestamp: new Date().toISOString(),
@@ -35,17 +119,18 @@ export default function handler(request, response) {
         user: user || null,
         oldUser: oldUser || null,
         source: 'Quectel BG95',
-        ip: request.headers['x-forwarded-for'] || request.connection.remoteAddress
+        ip: request.headers['x-forwarded-for'] || request.connection.remoteAddress,
+        result: result
       };
       
-      // In a real application, you would save this to a database
       console.log('BG95 Request Log:', JSON.stringify(logEntry, null, 2));
       
       response.status(200).json({
         success: true,
-        message: `Action '${action}' processed successfully`,
+        message: result.message,
         timestamp: new Date().toISOString(),
-        received: logEntry
+        data: result.user,
+        allUsers: users
       });
       
     } catch (error) {
@@ -53,59 +138,50 @@ export default function handler(request, response) {
       response.status(500).json({
         success: false,
         error: 'Internal server error',
-        message: 'Failed to process BG95 request'
+        message: error.message
       });
     }
     return;
   }
   
-  // Handle GET requests (existing functionality)
-  const { username } = request.query;
+  // Handle GET requests
+  const { username, all } = request.query;
   
-  if (!username) {
-    response.status(400).json({ error: 'Username parameter is required' });
+  // Return all users if 'all' parameter is present
+  if (all === 'true') {
+    response.status(200).json({
+      success: true,
+      data: users,
+      message: `Found ${users.length} users`,
+      count: users.length
+    });
     return;
   }
   
-  // Example user data - replace with your own logic
-  const users = {
-    john_doe: { 
-      name: "John Doe", 
-      email: "john@example.com", 
-      role: "admin",
-      status: "active",
-      lastLogin: "2024-01-15T10:30:00Z",
-      createdAt: "2023-06-01T00:00:00Z"
-    },
-    jane_smith: { 
-      name: "Jane Smith", 
-      email: "jane@example.com", 
-      role: "user",
-      status: "active",
-      lastLogin: "2024-01-14T15:45:00Z",
-      createdAt: "2023-08-15T00:00:00Z"
-    },
-    admin_user: {
-      name: "Admin User",
-      email: "admin@example.com",
-      role: "super_admin",
-      status: "active",
-      lastLogin: "2024-01-15T09:15:00Z",
-      createdAt: "2023-01-01T00:00:00Z"
+  // Return specific user by username (legacy functionality)
+  if (username) {
+    const user = users.find(u => u.name.toLowerCase().replace(/\s+/g, '_') === username.toLowerCase());
+    if (user) {
+      response.status(200).json({
+        success: true,
+        data: user,
+        message: "User found successfully"
+      });
+    } else {
+      response.status(404).json({ 
+        success: false,
+        error: "User not found",
+        message: `No user found with username: ${username}`
+      });
     }
-  };
-  
-  if (users[username]) {
-    response.status(200).json({
-      success: true,
-      data: users[username],
-      message: "User found successfully"
-    });
-  } else {
-    response.status(404).json({ 
-      success: false,
-      error: "User not found",
-      message: `No user found with username: ${username}`
-    });
+    return;
   }
+  
+  // Default: return all users
+  response.status(200).json({
+    success: true,
+    data: users,
+    message: `Found ${users.length} users`,
+    count: users.length
+  });
 }
