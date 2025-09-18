@@ -1,6 +1,6 @@
-# 📊 User Management System - GitHub Pages
+# 🚀 User & Product Status API Tester
 
-A complete client-side user management system with device tracking, status protocols, and user plans. Works entirely in your browser using localStorage. Perfect for GitHub Pages!
+A complete API testing solution with both frontend interface and Vercel serverless backend. Test user information retrieval via GET requests and product status updates via POST requests.
 
 ## 🌐 Live Demo
 
@@ -8,17 +8,21 @@ Visit: `https://davivieiras.github.io/my-test-api/`
 
 ## 🚀 Features
 
-- ✅ **User Management** - Create, edit, and delete users with plans
-- ✅ **Device Tracking** - Monitor device numbers and status protocols
-- ✅ **Status Protocols** - HTTPS, WebSocket, MQTT, TCP, UDP support
-- ✅ **User Plans** - Basic, Premium, and Enterprise tiers
-- ✅ **Real-time Dashboard** - Live monitoring of users and devices
-- ✅ **API Simulator** - Send user data and device updates
-- ✅ **Client-side Storage** - All data stored in localStorage
-- ✅ **GitHub Pages Ready** - No server required
+- ✅ **API Testing Interface** - Beautiful, responsive UI for testing APIs
+- ✅ **GET Endpoint Testing** - Check user information with username queries
+- ✅ **POST Endpoint Testing** - Update product status with form data
+- ✅ **Vercel Backend** - Serverless functions for real API endpoints
+- ✅ **CORS Support** - Properly configured for cross-origin requests
+- ✅ **Error Handling** - Comprehensive error messages and validation
+- ✅ **Real-time Responses** - Live API response display with syntax highlighting
+- ✅ **Multiple Deployment Options** - Works with Vercel, GitHub Pages, or local hosting
 
-## 📋 Pages
+## 📋 Files
 
+- **`api-tester.html`** - Main API testing interface
+- **`api/user.js`** - Vercel serverless function for GET requests
+- **`api/product.js`** - Vercel serverless function for POST requests
+- **`vercel.json`** - Vercel deployment configuration
 - **`index.html`** - Landing page with system overview
 - **`dashboard.html`** - User management dashboard
 - **`api-simulator.html`** - API endpoint simulator for user data
@@ -27,23 +31,85 @@ Visit: `https://davivieiras.github.io/my-test-api/`
 
 ## 🎯 How to Use
 
-1. **User Dashboard**: Manage users, devices, protocols, and plans
-2. **API Simulator**: Send user registration, device updates, and status reports
-3. **Device Tracking**: Monitor device numbers and status protocols
-4. **User Plans**: Manage Basic ($9.99), Premium ($19.99), and Enterprise ($49.99) plans
-5. **Real-time Monitoring**: View live device status and user activity
+### Frontend Testing
+1. **Open `api-tester.html`** in your browser
+2. **Check User Tab**: Enter username and test GET endpoint
+3. **Update Product Tab**: Fill form and test POST endpoint
+4. **Setup Instructions Tab**: Follow Vercel deployment guide
 
-## 🛠️ How It Works
+### Backend API Endpoints
+- **GET `/api/user?username=john_doe`** - Retrieve user information
+- **POST `/api/product`** - Update product status with JSON body
 
-- **localStorage**: Requests are stored in your browser's localStorage
-- **JavaScript**: All functionality is client-side JavaScript
-- **No Server**: Works completely without a backend
-- **GitHub Pages**: Perfect for static hosting
+## 🛠️ Backend Setup (Vercel)
+
+### Prerequisites
+- Node.js installed
+- Vercel CLI installed (`npm i -g vercel`)
+
+### Deployment Steps
+1. **Clone/Download** this repository
+2. **Install Vercel CLI**: `npm i -g vercel`
+3. **Deploy**: Run `vercel` in the project directory
+4. **Follow prompts** to configure your deployment
+5. **Update endpoints** in the HTML form with your Vercel URL
+
+### API Endpoints
+
+#### GET /api/user
+```javascript
+// Query parameters
+{
+  "username": "john_doe"  // Required
+}
+
+// Response
+{
+  "success": true,
+  "data": {
+    "name": "John Doe",
+    "email": "john@example.com",
+    "role": "admin",
+    "status": "active",
+    "lastLogin": "2024-01-15T10:30:00Z",
+    "createdAt": "2023-06-01T00:00:00Z"
+  },
+  "message": "User found successfully"
+}
+```
+
+#### POST /api/product
+```javascript
+// Request body
+{
+  "username": "john_doe",     // Required
+  "productId": "prod_12345",  // Required
+  "status": "active"          // Required: active, inactive, pending, discontinued
+}
+
+// Response
+{
+  "success": true,
+  "message": "Product status updated successfully",
+  "data": {
+    "productId": "prod_12345",
+    "status": "active",
+    "updatedBy": "john_doe",
+    "updatedAt": "2024-01-15T10:30:00Z",
+    "processingTime": "87ms"
+  }
+}
+```
 
 ## 📁 Project Structure
 
 ```
 my-test-api/
+├── api-tester.html      # Main API testing interface
+├── api/
+│   ├── user.js         # GET endpoint for user data
+│   └── product.js      # POST endpoint for product updates
+├── vercel.json         # Vercel deployment config
 ├── index.html          # Landing page
 ├── dashboard.html      # User management dashboard
 ├── api-simulator.html  # API endpoint simulator
@@ -52,23 +118,32 @@ my-test-api/
 └── README.md          # This file
 ```
 
-## 🎨 System Features
+## 🎨 API Tester Features
 
-- **User Management**: Create users with email, name, and plan assignments
-- **Device Tracking**: Monitor device numbers, names, and status protocols
-- **Status Protocols**: Support for HTTPS, WebSocket, MQTT, TCP, UDP
-- **User Plans**: Basic (5 devices), Premium (20 devices), Enterprise (unlimited)
-- **Real-time Updates**: Live device status monitoring
-- **API Simulation**: Simulate user registration and device updates
-- **Persistent Storage**: All data stored in browser localStorage
-- **Modern UI**: Clean, responsive design with real-time statistics
+- **Modern UI**: Dark theme with gradient backgrounds and glassmorphism effects
+- **Tabbed Interface**: Easy switching between GET and POST testing
+- **Real-time Validation**: Form validation with helpful error messages
+- **Syntax Highlighting**: JSON responses with proper formatting
+- **CORS Support**: Properly configured for cross-origin requests
+- **Error Handling**: Comprehensive error messages and status indicators
+- **Responsive Design**: Works on desktop and mobile devices
+- **Setup Instructions**: Built-in guide for Vercel deployment
 
-## 🚀 Deploy to GitHub Pages
+## 🚀 Deployment Options
 
-1. Push this repository to GitHub
-2. Go to repository Settings → Pages
-3. Select "Deploy from a branch" → "main" → "/ (root)"
-4. Your site will be live at `https://yourusername.github.io/my-test-api/`
+### Option 1: Vercel (Recommended)
+1. Run `vercel` in project directory
+2. Update endpoints in HTML form
+3. Access via your Vercel domain
+
+### Option 2: GitHub Pages
+1. Push to GitHub repository
+2. Enable GitHub Pages in repository settings
+3. Access via `https://yourusername.github.io/repository-name/`
+
+### Option 3: Local Development
+1. Use `vercel dev` for local development
+2. Test with `http://localhost:3000`
 
 ## 📝 License
 
