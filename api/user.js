@@ -1,25 +1,25 @@
-export default function handler(req, res) {
+export default function handler(request, response) {
   // Enable CORS for all origins
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  response.setHeader('Access-Control-Allow-Origin', '*');
+  response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  response.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   
   // Handle preflight requests
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
+  if (request.method === 'OPTIONS') {
+    response.status(200).end();
     return;
   }
   
   // Only allow GET requests
-  if (req.method !== 'GET') {
-    res.status(405).json({ error: 'Method not allowed' });
+  if (request.method !== 'GET') {
+    response.status(405).json({ error: 'Method not allowed' });
     return;
   }
   
-  const { username } = req.query;
+  const { username } = request.query;
   
   if (!username) {
-    res.status(400).json({ error: 'Username parameter is required' });
+    response.status(400).json({ error: 'Username parameter is required' });
     return;
   }
   
@@ -52,13 +52,13 @@ export default function handler(req, res) {
   };
   
   if (users[username]) {
-    res.status(200).json({
+    response.status(200).json({
       success: true,
       data: users[username],
       message: "User found successfully"
     });
   } else {
-    res.status(404).json({ 
+    response.status(404).json({ 
       success: false,
       error: "User not found",
       message: `No user found with username: ${username}`
