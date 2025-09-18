@@ -10,12 +10,56 @@ export default function handler(request, response) {
     return;
   }
   
-  // Only allow GET requests
-  if (request.method !== 'GET') {
+  // Handle both GET and POST requests
+  if (request.method !== 'GET' && request.method !== 'POST') {
     response.status(405).json({ error: 'Method not allowed' });
     return;
   }
   
+  // Handle POST requests from Quectel BG95
+  if (request.method === 'POST') {
+    try {
+      const { action, user, oldUser, timestamp } = request.body;
+      
+      console.log('POST request received from BG95:', {
+        action,
+        user,
+        timestamp,
+        source: 'Quectel BG95'
+      });
+      
+      // Log the request for monitoring
+      const logEntry = {
+        timestamp: new Date().toISOString(),
+        action: action || 'unknown',
+        user: user || null,
+        oldUser: oldUser || null,
+        source: 'Quectel BG95',
+        ip: request.headers['x-forwarded-for'] || request.connection.remoteAddress
+      };
+      
+      // In a real application, you would save this to a database
+      console.log('BG95 Request Log:', JSON.stringify(logEntry, null, 2));
+      
+      response.status(200).json({
+        success: true,
+        message: `Action '${action}' processed successfully`,
+        timestamp: new Date().toISOString(),
+        received: logEntry
+      });
+      
+    } catch (error) {
+      console.error('Error processing BG95 POST request:', error);
+      response.status(500).json({
+        success: false,
+        error: 'Internal server error',
+        message: 'Failed to process BG95 request'
+      });
+    }
+    return;
+  }
+  
+  // Handle GET requests (existing functionality)
   const { username } = request.query;
   
   if (!username) {

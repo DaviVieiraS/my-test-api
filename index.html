@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard</title>
+    <title>User Management System - Windows 95 Style</title>
     <style>
         * {
             margin: 0;
@@ -12,216 +12,533 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a0a;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(0, 100, 200, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(200, 0, 100, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(0, 200, 100, 0.1) 0%, transparent 50%);
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             padding: 20px;
+            color: #ffffff;
         }
         
         .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            padding: 40px;
-            max-width: 500px;
-            width: 100%;
-            text-align: center;
+            background: #1a1a1a;
+            border: 2px solid #333333;
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
         
-        .header {
+        .title-bar {
+            background: linear-gradient(90deg, #2d2d2d, #404040);
+            color: #00ff00;
+            padding: 12px 16px;
+            margin: -20px -20px 20px -20px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 8px 8px 0 0;
+            border-bottom: 2px solid #00ff00;
+        }
+        
+        .title-bar h1 {
+            font-size: 1.2rem;
+            margin: 0;
+        }
+        
+        .window-controls {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .window-btn {
+            width: 16px;
+            height: 14px;
+            background: #c0c0c0;
+            border: 1px outset #c0c0c0;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
             margin-bottom: 30px;
         }
         
-        .header h1 {
-            color: #333;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-        
-        .header p {
-            color: #666;
-            font-size: 1.1rem;
-        }
-        
         .user-card {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 30px;
-            margin: 20px 0;
-            border: 2px solid #e9ecef;
+            background: #2a2a2a;
+            border: 2px solid #444444;
+            border-radius: 8px;
+            padding: 15px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .user-card:hover {
+            border-color: #00ff00;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+        }
+        
+        .user-header {
+            background: linear-gradient(90deg, #333333, #555555);
+            color: #00ff00;
+            padding: 8px 12px;
+            margin: -15px -15px 15px -15px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            border-radius: 6px 6px 0 0;
         }
         
         .user-info {
-            margin: 20px 0;
+            margin: 10px 0;
         }
         
         .info-label {
-            font-weight: 600;
-            color: #495057;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
+            font-weight: bold;
+            color: #00ff00;
+            font-size: 0.8rem;
+            margin-bottom: 3px;
         }
         
         .info-value {
-            font-size: 1.3rem;
-            color: #212529;
-            margin-bottom: 20px;
+            font-size: 1rem;
+            color: #ffffff;
+            margin-bottom: 10px;
+            background: #333333;
+            border: 1px solid #555555;
+            border-radius: 4px;
+            padding: 8px 10px;
         }
         
         .status {
             display: inline-block;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            padding: 6px 12px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            border: 1px solid;
         }
         
         .status.active {
-            background: #d4edda;
-            color: #155724;
-            border: 2px solid #c3e6cb;
+            background: #00ff00;
+            color: #000;
+            border-color: #00cc00;
         }
         
         .status.inactive {
-            background: #f8d7da;
-            color: #721c24;
-            border: 2px solid #f5c6cb;
+            background: #ff4444;
+            color: #fff;
+            border-color: #cc0000;
         }
         
         .device-model {
-            background: #e3f2fd;
-            color: #1565c0;
-            padding: 10px 20px;
-            border-radius: 10px;
+            background: #1a1a1a;
+            color: #00ff00;
+            padding: 8px 12px;
             font-family: 'Courier New', monospace;
-            font-weight: 600;
+            font-size: 0.9rem;
+            border: 1px solid #444444;
+            border-radius: 4px;
+        }
+        
+        .controls {
+            background: #2a2a2a;
+            border: 2px solid #444444;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .controls h3 {
+            margin-bottom: 15px;
+            color: #00ff00;
+            font-size: 1.2rem;
+        }
+        
+        .controls h4 {
+            color: #ffffff;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+        
+        .form-group {
+            margin: 10px 0;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #00ff00;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #555555;
+            background: #333333;
+            color: #ffffff;
+            font-family: inherit;
+            border-radius: 4px;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #00ff00;
+            box-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
+        }
+        
+        .btn {
+            background: #444444;
+            border: 2px solid #666666;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            margin: 5px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            color: #ffffff;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-primary {
+            background: #0066cc;
+            border-color: #0088ff;
+        }
+        
+        .btn-success {
+            background: #00aa00;
+            border-color: #00cc00;
+            color: #000;
+        }
+        
+        .btn-danger {
+            background: #cc0000;
+            border-color: #ff0000;
         }
         
         .loading {
-            color: #666;
+            color: #00ff00;
             font-style: italic;
+            text-align: center;
+            padding: 20px;
         }
         
         .error {
-            color: #dc3545;
-            background: #f8d7da;
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid #f5c6cb;
+            color: #ff4444;
+            background: #2a1a1a;
+            padding: 12px;
+            border: 2px solid #ff4444;
+            border-radius: 6px;
+            margin: 10px 0;
         }
         
-        .refresh-btn {
-            background: #007bff;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            margin-top: 20px;
-            transition: all 0.3s ease;
-        }
-        
-        .refresh-btn:hover {
-            background: #0056b3;
-            transform: translateY(-2px);
+        .success {
+            color: #00ff00;
+            background: #1a2a1a;
+            padding: 12px;
+            border: 2px solid #00ff00;
+            border-radius: 6px;
+            margin: 10px 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>👤 User Dashboard</h1>
-            <p>Simple user information display</p>
+        <div class="title-bar">
+            <h1>📡 Quectel BG95 User Management System</h1>
+            <div class="window-controls">
+                <div class="window-btn">_</div>
+                <div class="window-btn">□</div>
+                <div class="window-btn">×</div>
+            </div>
         </div>
         
-        <div id="userCard" class="user-card">
-            <div class="loading">Loading user data...</div>
+        <div id="messageArea"></div>
+        
+        <div class="users-grid" id="usersGrid">
+            <div class="loading">Loading users...</div>
         </div>
         
-        <button class="refresh-btn" onclick="loadUserData()">🔄 Refresh</button>
+        <div class="controls">
+            <h3>🔧 User Management Controls</h3>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div>
+                    <h4>Add New User</h4>
+                    <div class="form-group">
+                        <label>Name:</label>
+                        <input type="text" id="newUserName" placeholder="Enter user name">
+                    </div>
+                    <div class="form-group">
+                        <label>Status:</label>
+                        <select id="newUserStatus">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Device Model:</label>
+                        <input type="text" id="newUserDevice" placeholder="Enter device model">
+                    </div>
+                    <button class="btn btn-success" onclick="addUser()">➕ Add User</button>
+                </div>
+                
+                <div>
+                    <h4>Update User</h4>
+                    <div class="form-group">
+                        <label>Select User:</label>
+                        <select id="updateUserSelect">
+                            <option value="">Select a user...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>New Status:</label>
+                        <select id="updateUserStatus">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>New Device Model:</label>
+                        <input type="text" id="updateUserDevice" placeholder="Enter new device model">
+                    </div>
+                    <button class="btn btn-primary" onclick="updateUser()">✏️ Update User</button>
+                    <button class="btn btn-danger" onclick="deleteUser()">🗑️ Delete User</button>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px; text-align: center;">
+                <button class="btn btn-primary" onclick="loadUsers()">🔄 Refresh All</button>
+                <button class="btn" onclick="exportUsers()">💾 Export Data</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Sample user data - replace with API call
-        const sampleUsers = [
+        // User data storage
+        let users = [
             {
+                id: 1,
                 name: "John Doe",
                 status: "active",
                 deviceModel: "iPhone 15 Pro"
             },
             {
+                id: 2,
                 name: "Jane Smith", 
                 status: "inactive",
                 deviceModel: "Samsung Galaxy S24"
             },
             {
+                id: 3,
                 name: "Mike Johnson",
                 status: "active", 
                 deviceModel: "Google Pixel 8"
             },
             {
+                id: 4,
                 name: "Sarah Wilson",
                 status: "inactive",
                 deviceModel: "OnePlus 12"
             }
         ];
         
-        function getRandomUser() {
-            return sampleUsers[Math.floor(Math.random() * sampleUsers.length)];
+        let nextId = 5;
+        
+        function showMessage(message, type = 'success') {
+            const messageArea = document.getElementById('messageArea');
+            messageArea.innerHTML = `<div class="${type}">${message}</div>`;
+            setTimeout(() => {
+                messageArea.innerHTML = '';
+            }, 3000);
         }
         
-        function displayUser(user) {
-            const userCard = document.getElementById('userCard');
+        function displayUsers() {
+            const usersGrid = document.getElementById('usersGrid');
+            const updateSelect = document.getElementById('updateUserSelect');
             
-            userCard.innerHTML = `
-                <div class="user-info">
-                    <div class="info-label">Name</div>
-                    <div class="info-value">${user.name}</div>
-                </div>
-                
-                <div class="user-info">
-                    <div class="info-label">Status</div>
-                    <div class="info-value">
-                        <span class="status ${user.status}">${user.status}</span>
+            if (users.length === 0) {
+                usersGrid.innerHTML = '<div class="loading">No users found. Add some users!</div>';
+                updateSelect.innerHTML = '<option value="">No users available</option>';
+                return;
+            }
+            
+            usersGrid.innerHTML = users.map(user => `
+                <div class="user-card">
+                    <div class="user-header">User #${user.id}</div>
+                    <div class="user-info">
+                        <div class="info-label">Name</div>
+                        <div class="info-value">${user.name}</div>
+                    </div>
+                    <div class="user-info">
+                        <div class="info-label">Status</div>
+                        <div class="info-value">
+                            <span class="status ${user.status}">${user.status}</span>
+                        </div>
+                    </div>
+                    <div class="user-info">
+                        <div class="info-label">Device Model</div>
+                        <div class="info-value">
+                            <div class="device-model">${user.deviceModel}</div>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="user-info">
-                    <div class="info-label">Device Model</div>
-                    <div class="info-value">
-                        <div class="device-model">${user.deviceModel}</div>
-                    </div>
-                </div>
-            `;
+            `).join('');
+            
+            // Update select dropdown
+            updateSelect.innerHTML = '<option value="">Select a user...</option>' + 
+                users.map(user => `<option value="${user.id}">${user.name} (ID: ${user.id})</option>`).join('');
         }
         
-        function loadUserData() {
+        function addUser() {
+            const name = document.getElementById('newUserName').value.trim();
+            const status = document.getElementById('newUserStatus').value;
+            const device = document.getElementById('newUserDevice').value.trim();
+            
+            if (!name || !device) {
+                showMessage('Please fill in all fields!', 'error');
+                return;
+            }
+            
+            const newUser = {
+                id: nextId++,
+                name: name,
+                status: status,
+                deviceModel: device
+            };
+            
+            users.push(newUser);
+            displayUsers();
+            
+            // Clear form
+            document.getElementById('newUserName').value = '';
+            document.getElementById('newUserDevice').value = '';
+            
+            showMessage(`User "${name}" added successfully!`);
+            
+            // Send POST request to API
+            sendUserUpdate('add', newUser);
+        }
+        
+        function updateUser() {
+            const userId = parseInt(document.getElementById('updateUserSelect').value);
+            const newStatus = document.getElementById('updateUserStatus').value;
+            const newDevice = document.getElementById('updateUserDevice').value.trim();
+            
+            if (!userId) {
+                showMessage('Please select a user to update!', 'error');
+                return;
+            }
+            
+            const userIndex = users.findIndex(u => u.id === userId);
+            if (userIndex === -1) {
+                showMessage('User not found!', 'error');
+                return;
+            }
+            
+            const oldUser = { ...users[userIndex] };
+            
+            if (newStatus) users[userIndex].status = newStatus;
+            if (newDevice) users[userIndex].deviceModel = newDevice;
+            
+            displayUsers();
+            showMessage(`User "${users[userIndex].name}" updated successfully!`);
+            
+            // Send POST request to API
+            sendUserUpdate('update', users[userIndex], oldUser);
+        }
+        
+        function deleteUser() {
+            const userId = parseInt(document.getElementById('updateUserSelect').value);
+            
+            if (!userId) {
+                showMessage('Please select a user to delete!', 'error');
+                return;
+            }
+            
+            const userIndex = users.findIndex(u => u.id === userId);
+            if (userIndex === -1) {
+                showMessage('User not found!', 'error');
+                return;
+            }
+            
+            if (!confirm(`Are you sure you want to delete user "${users[userIndex].name}"?`)) {
+                return;
+            }
+            
+            const deletedUser = users[userIndex];
+            users.splice(userIndex, 1);
+            displayUsers();
+            showMessage(`User "${deletedUser.name}" deleted successfully!`);
+            
+            // Send POST request to API
+            sendUserUpdate('delete', deletedUser);
+        }
+        
+        function loadUsers() {
+            displayUsers();
+            showMessage('Users refreshed!');
+        }
+        
+        function exportUsers() {
+            const dataStr = JSON.stringify(users, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'users_data.json';
+            link.click();
+            URL.revokeObjectURL(url);
+            showMessage('User data exported!');
+        }
+        
+        async function sendUserUpdate(action, userData, oldData = null) {
             try {
-                // Simulate API call delay
-                setTimeout(() => {
-                    const user = getRandomUser();
-                    displayUser(user);
-                }, 500);
+                const response = await fetch('/api/user', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: action,
+                        user: userData,
+                        oldUser: oldData,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+                
+                if (response.ok) {
+                    console.log(`${action} request sent successfully`);
+                } else {
+                    console.error(`Failed to send ${action} request:`, response.statusText);
+                }
             } catch (error) {
-                document.getElementById('userCard').innerHTML = 
-                    '<div class="error">Error loading user data. Please try again.</div>';
+                console.error(`Error sending ${action} request:`, error);
             }
         }
         
-        // Load initial data
-        loadUserData();
-        
-        // Auto-refresh every 10 seconds
-        setInterval(loadUserData, 10000);
+        // Initialize the page
+        displayUsers();
     </script>
 </body>
 </html>
