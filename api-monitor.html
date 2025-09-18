@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Monitor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: white;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .request-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .request-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .method-badge {
+            background: #4CAF50;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-right: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .method-badge.post {
+            background: #2196F3;
+        }
+        
+        .endpoint {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .data-section {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .data-title {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: #ccc;
+        }
+        
+        .data-content {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+            color: #fff;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .status.success {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .status.error {
+            background: #f44336;
+            color: white;
+        }
+        
+        .refresh-btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            width: 100%;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .loading {
+            text-align: center;
+            color: #ccc;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 API Monitor</h1>
+        
+        <button class="refresh-btn" onclick="loadData()">🔄 Refresh Data</button>
+        
+        <div id="get-request" class="request-card">
+            <div class="request-header">
+                <span class="method-badge">GET</span>
+                <span class="endpoint">/api/user</span>
+                <span class="status success">200 OK</span>
+            </div>
+            <div class="data-section">
+                <div class="data-title">Response Data:</div>
+                <div class="data-content" id="get-data">Loading...</div>
+            </div>
+        </div>
+        
+        <div id="post-request" class="request-card">
+            <div class="request-header">
+                <span class="method-badge post">POST</span>
+                <span class="endpoint">/api/product</span>
+                <span class="status success">200 OK</span>
+            </div>
+            <div class="data-section">
+                <div class="data-title">Response Data:</div>
+                <div class="data-content" id="post-data">Loading...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://my-test-api-doju.vercel.app';
+        
+        function formatJSON(data) {
+            return JSON.stringify(data, null, 2);
+        }
+        
+        async function loadData() {
+            // Load GET request data
+            try {
+                const getResponse = await fetch(`${API_BASE}/api/user?username=john_doe`);
+                const getData = await getResponse.json();
+                document.getElementById('get-data').textContent = formatJSON(getData);
+            } catch (error) {
+                document.getElementById('get-data').textContent = `Error: ${error.message}`;
+            }
+            
+            // Load POST request data
+            try {
+                const postResponse = await fetch(`${API_BASE}/api/product`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: 'john_doe',
+                        productId: 'prod_12345',
+                        status: 'active'
+                    })
+                });
+                const postData = await postResponse.json();
+                document.getElementById('post-data').textContent = formatJSON(postData);
+            } catch (error) {
+                document.getElementById('post-data').textContent = `Error: ${error.message}`;
+            }
+        }
+        
+        // Load data on page load
+        loadData();
+        
+        // Auto-refresh every 30 seconds
+        setInterval(loadData, 30000);
+    </script>
+</body>
+</html>
