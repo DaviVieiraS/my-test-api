@@ -471,7 +471,11 @@
         
         async function loadUsers() {
             try {
-                const response = await fetch('/api/users');
+                const response = await fetch('/api/users', {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
                 const data = await response.json();
                 
                 if (data.success) {
@@ -505,7 +509,7 @@
                 const response = await fetch('/api/users', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
                         action: action,
