@@ -6,7 +6,7 @@ HardwareSerial SerialAT(1);
 
 // Global variables
 const char *APN = "zap.vivo.com.br";
-const char *URL = "https://my-test-api-beta.vercel.app";
+const char *URL = "https://my-test-api-three.vercel.app";
 const char *ENDPOINT = "/api/users";
 
 // BG95-M3 Pin definitions
