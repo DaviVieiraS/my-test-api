@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -471,7 +471,7 @@
         
         async function loadUsers() {
             try {
-                const response = await fetch('/api/user?all=true');
+                const response = await fetch('/api/users');
                 const data = await response.json();
                 
                 if (data.success) {
@@ -502,7 +502,7 @@
         
         async function sendUserUpdate(action, userData, oldData = null) {
             try {
-                const response = await fetch('/api/user', {
+                const response = await fetch('/api/users', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -516,12 +516,16 @@
                 });
                 
                 if (response.ok) {
-                    console.log(`${action} request sent successfully`);
+                    const result = await response.json();
+                    console.log(`${action} request sent successfully:`, result);
+                    showMessage(`✅ ${action} request sent to API successfully!`);
                 } else {
                     console.error(`Failed to send ${action} request:`, response.statusText);
+                    showMessage(`❌ Failed to send ${action} request`, 'error');
                 }
             } catch (error) {
                 console.error(`Error sending ${action} request:`, error);
+                showMessage(`❌ Error sending ${action} request`, 'error');
             }
         }
         

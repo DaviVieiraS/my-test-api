@@ -1,5 +1,5 @@
-// In-memory storage for users (in production, use a database)
-let users = [
+// Default users data (in production, use a database)
+const defaultUsers = [
   {
     id: 1,
     name: "John Doe",
@@ -26,6 +26,9 @@ let users = [
   }
 ];
 
+// For demo purposes, we'll simulate user storage
+// In production, use a real database
+let users = [...defaultUsers];
 let nextId = 5;
 
 export default function handler(request, response) {
