@@ -232,7 +232,7 @@ void runCompleteSequence() {
     Serial.println("  🟢 Status: active");
     Serial.println("  📱 Device: BG95Device123");
     Serial.println("");
-    Serial.println("📊 Data sent to my-test-api-beta.vercel.app successfully!");
+    Serial.println("📊 Data sent to my-test-api-three.vercel.app successfully!");
     Serial.println("⏰ Timestamp: 2024-01-15T10:30:00.000Z");
     Serial.println("");
     Serial.println("🏁 PROGRAM COMPLETED SUCCESSFULLY!");
@@ -594,6 +594,14 @@ bool openDataConnection() {
 bool sendHTTPPost(const char* url, const char* endpoint, const char* data) {
   Serial.println("=== CONFIGURING HTTP POST ===");
   
+  // Start HTTP service first
+  if (!sendATCommandWithRetry("AT+QHTTPSTART", "OK", 3000, 3)) {
+    Serial.println("WARNING: HTTP service start failed, continuing anyway...");
+  } else {
+    Serial.println("HTTP service started successfully");
+    delay(1000); // Give HTTP service time to initialize
+  }
+
   // Configure HTTP context (use context 0, not 1)
   if (!sendATCommandWithRetry("AT+QHTTPCFG=\"contextid\",0", "OK", 1000, 3)) {
     Serial.println("Failed to configure HTTP context");
@@ -615,8 +623,8 @@ bool sendHTTPPost(const char* url, const char* endpoint, const char* data) {
   // Set Content-Type header explicitly
   sendATCommandWithRetry("AT+QHTTPCFG=\"requestheader\",1,\"Content-Type: application/json\"", "OK", 1000, 2);
 
-  // Set content type
-  sendATCommandWithRetry("AT+QHTTPCFG=\"contenttype\",0", "OK", 1000, 2);
+  // Set content type (corrected parameter)
+  sendATCommandWithRetry("AT+QHTTPCFG=\"contenttype\",1", "OK", 1000, 2);
 
   // Set URL
   String fullUrl = String(url) + String(endpoint);
@@ -662,13 +670,20 @@ bool sendHTTPPost(const char* url, const char* endpoint, const char* data) {
         String response = sendATGetResponse("AT+QHTTPREAD=80", 5000);
         Serial.println("Server response: " + response);
         
-        // Check if response contains success indicators
-        if (response.indexOf("success") != -1 || response.indexOf("200") != -1) {
+        // Check for HTTP status codes
+        if (response.indexOf("200") != -1) {
+          Serial.println("✅ Server confirmed successful POST! (HTTP 200)");
+          return true;
+        } else if (response.indexOf("500") != -1) {
+          Serial.println("⚠️ Server returned 500 error - check server logs");
+          return false;
+        } else if (response.indexOf("success") != -1) {
           Serial.println("✅ Server confirmed successful POST!");
           return true;
         } else {
           Serial.println("⚠️ POST sent but server response unclear");
-          return true; // Still consider it successful if we got a response
+          Serial.println("Response: " + response);
+          return false; // Don't consider it successful if response is unclear
         }
       } else {
         Serial.println("❌ POST request timeout");
@@ -683,8 +698,9 @@ bool sendHTTPPost(const char* url, const char* endpoint, const char* data) {
     return false;
   }
   
-  // Clean up
+  // Clean up HTTP service
   sendATCommandWithRetry("AT+QHTTPCLOSE=0", "OK", 1000, 2);
+  sendATCommandWithRetry("AT+QHTTPSTOP", "OK", 1000, 2);
   return false;
 }
 
