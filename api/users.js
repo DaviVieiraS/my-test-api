@@ -1,4 +1,16 @@
-// Simple user management API for Vercel
+// User management API for Vercel with persistent storage
+// In production, use a real database like MongoDB, PostgreSQL, etc.
+
+// Global user storage (resets on serverless function restart)
+let users = [
+  { id: 1, name: "John Doe", status: "active", deviceModel: "iPhone 15 Pro" },
+  { id: 2, name: "Jane Smith", status: "inactive", deviceModel: "Samsung Galaxy S24" },
+  { id: 3, name: "Mike Johnson", status: "active", deviceModel: "Google Pixel 8" },
+  { id: 4, name: "Sarah Wilson", status: "inactive", deviceModel: "OnePlus 12" }
+];
+
+let nextId = 5;
+
 export default function handler(request, response) {
   // Enable CORS
   response.setHeader('Access-Control-Allow-Origin', '*');
@@ -10,21 +22,13 @@ export default function handler(request, response) {
     return;
   }
 
-  // Default users
-  const defaultUsers = [
-    { id: 1, name: "John Doe", status: "active", deviceModel: "iPhone 15 Pro" },
-    { id: 2, name: "Jane Smith", status: "inactive", deviceModel: "Samsung Galaxy S24" },
-    { id: 3, name: "Mike Johnson", status: "active", deviceModel: "Google Pixel 8" },
-    { id: 4, name: "Sarah Wilson", status: "inactive", deviceModel: "OnePlus 12" }
-  ];
-
   if (request.method === 'GET') {
     // Return all users
     response.status(200).json({
       success: true,
-      data: defaultUsers,
-      message: `Found ${defaultUsers.length} users`,
-      count: defaultUsers.length
+      data: users,
+      message: `Found ${users.length} users`,
+      count: users.length
     });
     return;
   }
@@ -40,19 +44,82 @@ export default function handler(request, response) {
         source: 'API Request'
       });
 
-      // For demo purposes, we'll just return success
-      // In production, you would save to a database
+      let result = {};
+
+      // Process the action
+      switch (action) {
+        case 'add':
+          if (user && user.name && user.deviceModel) {
+            const newUser = {
+              id: user.id || nextId++,
+              name: user.name,
+              status: user.status || 'active',
+              deviceModel: user.deviceModel
+            };
+            users.push(newUser);
+            result = { 
+              message: `User '${newUser.name}' added successfully`, 
+              user: newUser,
+              allUsers: users
+            };
+            console.log('User added:', newUser);
+            console.log('Total users now:', users.length);
+          } else {
+            throw new Error('Missing required fields: name and deviceModel');
+          }
+          break;
+          
+        case 'update':
+          if (user && user.id) {
+            const userIndex = users.findIndex(u => u.id === user.id);
+            if (userIndex !== -1) {
+              const oldUserData = { ...users[userIndex] };
+              if (user.name) users[userIndex].name = user.name;
+              if (user.status) users[userIndex].status = user.status;
+              if (user.deviceModel) users[userIndex].deviceModel = user.deviceModel;
+              result = { 
+                message: `User '${users[userIndex].name}' updated successfully`, 
+                user: users[userIndex], 
+                oldUser: oldUserData,
+                allUsers: users
+              };
+            } else {
+              throw new Error(`User with ID ${user.id} not found`);
+            }
+          } else {
+            throw new Error('Missing required field: user ID');
+          }
+          break;
+          
+        case 'delete':
+          if (user && user.id) {
+            const userIndex = users.findIndex(u => u.id === user.id);
+            if (userIndex !== -1) {
+              const deletedUser = users.splice(userIndex, 1)[0];
+              result = { 
+                message: `User '${deletedUser.name}' deleted successfully`, 
+                user: deletedUser,
+                allUsers: users
+              };
+            } else {
+              throw new Error(`User with ID ${user.id} not found`);
+            }
+          } else {
+            throw new Error('Missing required field: user ID');
+          }
+          break;
+          
+        default:
+          throw new Error(`Unknown action: ${action}`);
+      }
+
       const responseData = {
         success: true,
-        message: `Action '${action}' processed successfully`,
+        message: result.message,
         timestamp: new Date().toISOString(),
-        data: user,
-        received: {
-          action,
-          user,
-          timestamp,
-          source: 'API Request'
-        }
+        data: result.user,
+        allUsers: result.allUsers || users,
+        count: users.length
       };
 
       // Log the request
