@@ -22,6 +22,7 @@ export default function handler(request, response) {
   console.log('Method:', request.method);
   console.log('URL:', request.url);
   console.log('Headers:', JSON.stringify(request.headers, null, 2));
+  console.log('Body type:', typeof request.body);
   console.log('Body:', JSON.stringify(request.body, null, 2));
   console.log('================================');
   
@@ -51,7 +52,31 @@ export default function handler(request, response) {
         throw new Error('Request body is missing or empty');
       }
       
-      const { action, user, timestamp } = request.body;
+      // Handle both parsed and raw body
+      let parsedBody = request.body;
+      
+      // If body is a string, try to parse it
+      if (typeof request.body === 'string') {
+        try {
+          parsedBody = JSON.parse(request.body);
+          console.log('Parsed JSON from string body');
+        } catch (parseError) {
+          console.error('Failed to parse JSON body:', parseError);
+          console.error('Raw body string:', request.body);
+          throw new Error('Invalid JSON in request body');
+        }
+      }
+      
+      // Additional check for empty or undefined body
+      if (!parsedBody || (typeof parsedBody === 'object' && Object.keys(parsedBody).length === 0)) {
+        console.error('Empty or invalid parsed body');
+        throw new Error('Request body is empty or invalid');
+      }
+      
+      console.log('Parsed body:', JSON.stringify(parsedBody, null, 2));
+      console.log('Parsed body keys:', Object.keys(parsedBody));
+      
+      const { action, user, timestamp } = parsedBody;
       
       console.log('POST request received:', {
         action,
