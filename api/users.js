@@ -17,7 +17,16 @@ export default function handler(request, response) {
   response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   response.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, User-Agent');
   
+  // Enhanced logging for debugging
+  console.log('=== API REQUEST RECEIVED ===');
+  console.log('Method:', request.method);
+  console.log('URL:', request.url);
+  console.log('Headers:', JSON.stringify(request.headers, null, 2));
+  console.log('Body:', JSON.stringify(request.body, null, 2));
+  console.log('================================');
+  
   if (request.method === 'OPTIONS') {
+    console.log('Handling OPTIONS request');
     response.status(200).end();
     return;
   }
@@ -35,14 +44,32 @@ export default function handler(request, response) {
 
   if (request.method === 'POST') {
     try {
+      console.log('Processing POST request...');
+      
+      // Validate request body exists
+      if (!request.body) {
+        throw new Error('Request body is missing or empty');
+      }
+      
       const { action, user, timestamp } = request.body;
       
       console.log('POST request received:', {
         action,
         user,
         timestamp,
-        source: 'API Request'
+        source: 'API Request',
+        bodyType: typeof request.body,
+        bodyKeys: Object.keys(request.body || {})
       });
+
+      // Validate required fields
+      if (!action) {
+        throw new Error('Missing required field: action');
+      }
+      
+      if (!user) {
+        throw new Error('Missing required field: user');
+      }
 
       let result = {};
 
@@ -128,15 +155,26 @@ export default function handler(request, response) {
       response.status(200).json(responseData);
       
     } catch (error) {
-      console.error('Error processing request:', error);
+      console.error('=== ERROR PROCESSING REQUEST ===');
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+      console.error('Request body:', JSON.stringify(request.body, null, 2));
+      console.error('================================');
+      
       response.status(500).json({
         success: false,
         error: 'Internal server error',
-        message: error.message
+        message: error.message,
+        timestamp: new Date().toISOString()
       });
     }
     return;
   }
 
-  response.status(405).json({ error: 'Method not allowed' });
+  console.log('Method not allowed:', request.method);
+  response.status(405).json({ 
+    error: 'Method not allowed',
+    method: request.method,
+    allowedMethods: ['GET', 'POST', 'OPTIONS']
+  });
 }

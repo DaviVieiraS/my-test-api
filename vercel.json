@@ -4,6 +4,9 @@
     "api/user.js": {
       "maxDuration": 10
     },
+    "api/users.js": {
+      "maxDuration": 10
+    },
     "api/product.js": {
       "maxDuration": 10
     }
